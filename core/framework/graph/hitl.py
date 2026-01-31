@@ -23,6 +23,20 @@ class HITLInputType(str, Enum):
 @dataclass
 class HITLQuestion:
     """A single question to ask the human."""
+    
+    def __post_init__(self):
+        """
+        Perform validation after the object is initialized.
+        Ensures that required fields are provided for specific input types.
+        Raises:
+            ValueError: If required fields for specific input types are not provided.
+        - SELECTION type must have non-empty 'options' list.
+        - STRUCTURED type must have non-empty 'fields' dictionary.
+        """
+        if self.input_type == HITLInputType.SELECTION and not self.options:
+            raise ValueError("'options' must be provided for SELECTION input type")
+        if self.input_type == HITLInputType.STRUCTURED and not self.fields:
+            raise ValueError("'fields' must be provided for STRUCTURED input type")
 
     id: str
     question: str
